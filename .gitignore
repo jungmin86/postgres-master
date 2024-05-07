@@ -44,4 +44,4 @@ lib*.pc
 /tmp_install/
 /portlock/
 
-.DS_Store
+/.DS_Store
