@@ -1,0 +1,163 @@
+waiting for server to start....2024-04-25 01:35:34.179 KST [61701] LOG:  starting PostgreSQL 17devel on aarch64-apple-darwin23.4.0, compiled by Apple clang version 15.0.0 (clang-1500.3.9.4), 64-bit
+2024-04-25 01:35:34.183 KST [61701] LOG:  listening on IPv6 address "::1", port 10432
+2024-04-25 01:35:34.183 KST [61701] LOG:  listening on IPv4 address "127.0.0.1", port 10432
+2024-04-25 01:35:34.183 KST [61701] LOG:  listening on Unix socket "/tmp/.s.PGSQL.10432"
+2024-04-25 01:35:34.185 KST [61704] LOG:  database system was shut down at 2024-04-25 01:34:28 KST
+2024-04-25 01:35:34.187 KST [61701] LOG:  database system is ready to accept connections
+ done
+server started
+2024-04-25 01:36:03.869 KST [61728] LOG:  statement: explain select r_regionkey from region;
+2024-04-25 01:36:50.744 KST [61728] ERROR:  syntax error at or near "ㄷㄷㄷ" at character 1
+2024-04-25 01:36:50.744 KST [61728] STATEMENT:  ㄷㄷㄷ
+	slect;
+2024-04-25 01:39:12.520 KST [61701] LOG:  received fast shutdown request
+2024-04-25 01:39:12.521 KST [61701] LOG:  aborting any active transactions
+2024-04-25 01:39:12.521 KST [61701] LOG:  background worker "logical replication launcher" (PID 61707) exited with exit code 1
+2024-04-25 01:39:12.522 KST [61702] LOG:  shutting down
+2024-04-25 01:39:12.522 KST [61702] LOG:  checkpoint starting: shutdown immediate
+2024-04-25 01:39:12.524 KST [61702] LOG:  checkpoint complete: wrote 3 buffers (0.0%); 0 WAL file(s) added, 0 removed, 0 recycled; write=0.001 s, sync=0.001 s, total=0.003 s; sync files=2, longest=0.001 s, average=0.001 s; distance=0 kB, estimate=0 kB; lsn=0/156D0B0, redo lsn=0/156D0B0
+2024-04-25 01:39:12.527 KST [61701] LOG:  database system is shut down
+2024-05-01 16:17:50.794 KST [70349] LOG:  invalid value for parameter "log_parser_stats": 1
+2024-05-01 16:17:50.794 KST [70349] DETAIL:  Cannot enable parameter when "log_statement_stats" is true.
+2024-05-01 16:17:50.795 KST [70349] LOG:  invalid value for parameter "log_planner_stats": 1
+2024-05-01 16:17:50.795 KST [70349] DETAIL:  Cannot enable parameter when "log_statement_stats" is true.
+2024-05-01 16:17:50.795 KST [70349] LOG:  invalid value for parameter "log_executor_stats": 1
+2024-05-01 16:17:50.795 KST [70349] DETAIL:  Cannot enable parameter when "log_statement_stats" is true.
+2024-05-01 16:17:50.795 KST [70349] FATAL:  configuration file "/Users/gimjeongmin/my_postgres/data/postgresql.conf" contains errors
+2024-05-01 16:18:36.338 KST [70389] LOG:  invalid value for parameter "log_parser_stats": 1
+2024-05-01 16:18:36.338 KST [70389] DETAIL:  Cannot enable parameter when "log_statement_stats" is true.
+2024-05-01 16:18:36.338 KST [70389] LOG:  invalid value for parameter "log_planner_stats": 1
+2024-05-01 16:18:36.338 KST [70389] DETAIL:  Cannot enable parameter when "log_statement_stats" is true.
+2024-05-01 16:18:36.338 KST [70389] LOG:  invalid value for parameter "log_executor_stats": 1
+2024-05-01 16:18:36.338 KST [70389] DETAIL:  Cannot enable parameter when "log_statement_stats" is true.
+2024-05-01 16:18:36.338 KST [70389] FATAL:  configuration file "/Users/gimjeongmin/my_postgres/data/postgresql.conf" contains errors
+2024-05-01 16:56:48.144 KST [78126] LOG:  invalid value for parameter "log_parser_stats": 1
+2024-05-01 16:56:48.144 KST [78126] DETAIL:  Cannot enable parameter when "log_statement_stats" is true.
+2024-05-01 16:56:48.144 KST [78126] LOG:  invalid value for parameter "log_planner_stats": 1
+2024-05-01 16:56:48.144 KST [78126] DETAIL:  Cannot enable parameter when "log_statement_stats" is true.
+2024-05-01 16:56:48.144 KST [78126] LOG:  invalid value for parameter "log_executor_stats": 1
+2024-05-01 16:56:48.144 KST [78126] DETAIL:  Cannot enable parameter when "log_statement_stats" is true.
+2024-05-01 16:56:48.144 KST [78126] FATAL:  configuration file "/Users/gimjeongmin/my_postgres/data/postgresql.conf" contains errors
+2024-05-01 17:01:30.345 KST [78309] DEBUG:  registering background worker "logical replication launcher"
+2024-05-01 17:01:30.349 KST [78309] LOG:  redirecting log output to logging collector process
+2024-05-01 17:01:30.349 KST [78309] HINT:  Future log output will appear in directory "log".
+2024-05-01 19:22:13.828 KST [78310] DEBUG:  logger shutting down
+2024-05-01 19:22:18.733 KST [79628] DEBUG:  registering background worker "logical replication launcher"
+2024-05-01 19:22:18.748 KST [79628] LOG:  redirecting log output to logging collector process
+2024-05-01 19:22:18.748 KST [79628] HINT:  Future log output will appear in directory "log".
+2024-05-01 19:27:39.867 KST [79629] DEBUG:  logger shutting down
+2024-05-01 19:27:45.779 KST [79728] DEBUG:  registering background worker "logical replication launcher"
+2024-05-01 19:27:45.782 KST [79728] LOG:  redirecting log output to logging collector process
+2024-05-01 19:27:45.782 KST [79728] HINT:  Future log output will appear in directory "log".
+2024-05-01 20:16:23.428 KST [79729] DEBUG:  logger shutting down
+2024-05-01 20:16:28.476 KST [80621] DEBUG:  registering background worker "logical replication launcher"
+2024-05-01 20:16:28.494 KST [80621] LOG:  redirecting log output to logging collector process
+2024-05-01 20:16:28.494 KST [80621] HINT:  Future log output will appear in directory "log".
+2024-05-01 20:16:37.548 KST [80622] DEBUG:  logger shutting down
+2024-05-01 20:17:19.128 KST [81746] DEBUG:  registering background worker "logical replication launcher"
+2024-05-01 20:17:19.143 KST [81746] LOG:  redirecting log output to logging collector process
+2024-05-01 20:17:19.143 KST [81746] HINT:  Future log output will appear in directory "log".
+2024-05-01 20:30:15.648 KST [81747] DEBUG:  logger shutting down
+2024-05-01 20:30:40.272 KST [83371] DEBUG:  registering background worker "logical replication launcher"
+2024-05-01 20:30:40.286 KST [83371] LOG:  redirecting log output to logging collector process
+2024-05-01 20:30:40.286 KST [83371] HINT:  Future log output will appear in directory "log".
+2024-05-01 20:31:40.815 KST [83372] DEBUG:  logger shutting down
+2024-05-01 20:32:00.082 KST [84545] DEBUG:  registering background worker "logical replication launcher"
+2024-05-01 20:32:00.096 KST [84545] LOG:  redirecting log output to logging collector process
+2024-05-01 20:32:00.096 KST [84545] HINT:  Future log output will appear in directory "log".
+2024-05-01 20:32:38.979 KST [84546] DEBUG:  logger shutting down
+2024-05-01 20:32:43.170 KST [84677] DEBUG:  registering background worker "logical replication launcher"
+2024-05-01 20:32:43.184 KST [84677] LOG:  redirecting log output to logging collector process
+2024-05-01 20:32:43.184 KST [84677] HINT:  Future log output will appear in directory "log".
+2024-05-01 20:35:11.668 KST [84678] DEBUG:  logger shutting down
+2024-05-01 20:35:59.291 KST [85041] DEBUG:  registering background worker "logical replication launcher"
+2024-05-01 20:35:59.304 KST [85041] LOG:  redirecting log output to logging collector process
+2024-05-01 20:35:59.304 KST [85041] HINT:  Future log output will appear in directory "log".
+2024-05-01 20:37:31.978 KST [85042] DEBUG:  logger shutting down
+2024-05-01 20:39:05.027 KST [1273] DEBUG:  registering background worker "logical replication launcher"
+2024-05-01 20:39:05.043 KST [1273] LOG:  redirecting log output to logging collector process
+2024-05-01 20:39:05.043 KST [1273] HINT:  Future log output will appear in directory "log".
+2024-05-01 20:39:50.260 KST [1274] DEBUG:  logger shutting down
+2024-05-01 20:40:13.303 KST [2443] DEBUG:  registering background worker "logical replication launcher"
+2024-05-01 20:40:13.319 KST [2443] LOG:  redirecting log output to logging collector process
+2024-05-01 20:40:13.319 KST [2443] HINT:  Future log output will appear in directory "log".
+2024-05-01 20:42:11.287 KST [2444] DEBUG:  logger shutting down
+2024-05-01 20:42:24.075 KST [3657] DEBUG:  registering background worker "logical replication launcher"
+2024-05-01 20:42:24.092 KST [3657] LOG:  redirecting log output to logging collector process
+2024-05-01 20:42:24.092 KST [3657] HINT:  Future log output will appear in directory "log".
+2024-05-01 20:53:35.032 KST [3658] DEBUG:  logger shutting down
+2024-05-01 20:53:38.961 KST [4510] DEBUG:  registering background worker "logical replication launcher"
+2024-05-01 20:53:38.977 KST [4510] LOG:  redirecting log output to logging collector process
+2024-05-01 20:53:38.977 KST [4510] HINT:  Future log output will appear in directory "log".
+2024-05-01 20:53:56.632 KST [5608] FATAL:  lock file "postmaster.pid" already exists
+2024-05-01 20:53:56.632 KST [5608] HINT:  Is another postmaster (PID 4510) running in data directory "/Users/gimjeongmin/my_postgres/data"?
+2024-05-01 20:54:31.932 KST [4511] DEBUG:  logger shutting down
+2024-05-01 20:54:35.198 KST [5763] DEBUG:  registering background worker "logical replication launcher"
+2024-05-01 20:54:35.212 KST [5763] LOG:  redirecting log output to logging collector process
+2024-05-01 20:54:35.212 KST [5763] HINT:  Future log output will appear in directory "log".
+2024-05-01 20:55:15.646 KST [5764] DEBUG:  logger shutting down
+2024-05-01 20:55:27.304 KST [5873] DEBUG:  registering background worker "logical replication launcher"
+2024-05-01 20:55:27.317 KST [5873] LOG:  redirecting log output to logging collector process
+2024-05-01 20:55:27.317 KST [5873] HINT:  Future log output will appear in directory "log".
+2024-05-01 20:56:19.083 KST [5874] DEBUG:  logger shutting down
+2024-05-01 20:57:19.228 KST [6149] DEBUG:  registering background worker "logical replication launcher"
+2024-05-01 20:57:19.243 KST [6149] LOG:  redirecting log output to logging collector process
+2024-05-01 20:57:19.243 KST [6149] HINT:  Future log output will appear in directory "log".
+2024-05-01 21:02:37.733 KST [6150] DEBUG:  logger shutting down
+2024-05-01 21:02:41.419 KST [6511] DEBUG:  registering background worker "logical replication launcher"
+2024-05-01 21:02:41.422 KST [6511] LOG:  redirecting log output to logging collector process
+2024-05-01 21:02:41.422 KST [6511] HINT:  Future log output will appear in directory "log".
+2024-05-01 21:11:08.988 KST [6512] DEBUG:  logger shutting down
+2024-05-01 21:11:20.973 KST [6834] DEBUG:  registering background worker "logical replication launcher"
+2024-05-01 21:11:20.977 KST [6834] LOG:  redirecting log output to logging collector process
+2024-05-01 21:11:20.977 KST [6834] HINT:  Future log output will appear in directory "log".
+2024-05-01 21:12:37.115 KST [6835] DEBUG:  logger shutting down
+2024-05-01 21:13:26.044 KST [6944] DEBUG:  registering background worker "logical replication launcher"
+2024-05-01 21:13:26.057 KST [6944] LOG:  redirecting log output to logging collector process
+2024-05-01 21:13:26.057 KST [6944] HINT:  Future log output will appear in directory "log".
+2024-05-01 21:14:51.224 KST [6945] DEBUG:  logger shutting down
+2024-05-01 21:26:59.004 KST [7124] DEBUG:  registering background worker "logical replication launcher"
+2024-05-01 21:26:59.017 KST [7124] LOG:  redirecting log output to logging collector process
+2024-05-01 21:26:59.017 KST [7124] HINT:  Future log output will appear in directory "log".
+2024-05-01 21:28:11.386 KST [7125] DEBUG:  logger shutting down
+2024-05-01 21:28:12.229 KST [7198] DEBUG:  registering background worker "logical replication launcher"
+2024-05-01 21:28:12.242 KST [7198] LOG:  redirecting log output to logging collector process
+2024-05-01 21:28:12.242 KST [7198] HINT:  Future log output will appear in directory "log".
+2024-05-01 21:29:06.312 KST [7199] DEBUG:  logger shutting down
+2024-05-01 21:29:07.648 KST [7255] DEBUG:  registering background worker "logical replication launcher"
+2024-05-01 21:29:07.650 KST [7255] LOG:  redirecting log output to logging collector process
+2024-05-01 21:29:07.650 KST [7255] HINT:  Future log output will appear in directory "log".
+2024-05-01 21:30:01.879 KST [7256] DEBUG:  logger shutting down
+2024-05-01 21:30:02.674 KST [7318] DEBUG:  registering background worker "logical replication launcher"
+2024-05-01 21:30:02.677 KST [7318] LOG:  redirecting log output to logging collector process
+2024-05-01 21:30:02.677 KST [7318] HINT:  Future log output will appear in directory "log".
+2024-05-01 21:33:00.822 KST [7319] DEBUG:  logger shutting down
+2024-05-02 14:08:54.246 KST [15192] DEBUG:  registering background worker "logical replication launcher"
+2024-05-02 14:08:54.262 KST [15192] LOG:  redirecting log output to logging collector process
+2024-05-02 14:08:54.262 KST [15192] HINT:  Future log output will appear in directory "log".
+2024-05-02 14:13:44.725 KST [16581] FATAL:  lock file "postmaster.pid" already exists
+2024-05-02 14:13:44.725 KST [16581] HINT:  Is another postmaster (PID 15192) running in data directory "/Users/gimjeongmin/my_postgres/data"?
+2024-05-02 14:15:33.477 KST [15193] DEBUG:  logger shutting down
+2024-05-02 14:15:57.066 KST [16810] DEBUG:  registering background worker "logical replication launcher"
+2024-05-02 14:15:57.081 KST [16810] LOG:  redirecting log output to logging collector process
+2024-05-02 14:15:57.081 KST [16810] HINT:  Future log output will appear in directory "log".
+2024-05-02 14:26:02.026 KST [16811] DEBUG:  logger shutting down
+2024-05-02 14:26:17.959 KST [18579] DEBUG:  registering background worker "logical replication launcher"
+2024-05-02 14:26:17.968 KST [18579] LOG:  redirecting log output to logging collector process
+2024-05-02 14:26:17.968 KST [18579] HINT:  Future log output will appear in directory "log".
+2024-05-02 14:43:52.215 KST [18580] DEBUG:  logger shutting down
+2024-05-02 14:52:33.334 KST [20458] DEBUG:  registering background worker "logical replication launcher"
+2024-05-02 14:52:33.351 KST [20458] LOG:  redirecting log output to logging collector process
+2024-05-02 14:52:33.351 KST [20458] HINT:  Future log output will appear in directory "log".
+2024-05-02 15:06:57.073 KST [20459] DEBUG:  logger shutting down
+2024-05-02 15:24:08.429 KST [23472] DEBUG:  registering background worker "logical replication launcher"
+2024-05-02 15:24:08.442 KST [23472] LOG:  redirecting log output to logging collector process
+2024-05-02 15:24:08.442 KST [23472] HINT:  Future log output will appear in directory "log".
+2024-05-02 15:31:54.679 KST [23473] DEBUG:  logger shutting down
+2024-05-02 15:43:44.628 KST [26133] DEBUG:  registering background worker "logical replication launcher"
+2024-05-02 15:43:44.643 KST [26133] LOG:  redirecting log output to logging collector process
+2024-05-02 15:43:44.643 KST [26133] HINT:  Future log output will appear in directory "log".
+2024-05-02 16:00:29.242 KST [26134] DEBUG:  logger shutting down
+2024-05-07 15:46:31.347 KST [91820] DEBUG:  registering background worker "logical replication launcher"
+2024-05-07 15:46:31.364 KST [91820] LOG:  redirecting log output to logging collector process
+2024-05-07 15:46:31.364 KST [91820] HINT:  Future log output will appear in directory "log".
