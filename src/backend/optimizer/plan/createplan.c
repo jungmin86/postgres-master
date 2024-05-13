@@ -72,179 +72,179 @@
 #define CP_IGNORE_TLIST		0x0008	/* caller will replace tlist */
 
 
-static Plan *create_plan_recurse(PlannerInfo *root, Path *best_path,
+Plan *create_plan_recurse(PlannerInfo *root, Path *best_path,
 								 int flags);
-static Plan *create_scan_plan(PlannerInfo *root, Path *best_path,
+Plan *create_scan_plan(PlannerInfo *root, Path *best_path,
 							  int flags);
-static List *build_path_tlist(PlannerInfo *root, Path *path);
-static bool use_physical_tlist(PlannerInfo *root, Path *path, int flags);
-static List *get_gating_quals(PlannerInfo *root, List *quals);
-static Plan *create_gating_plan(PlannerInfo *root, Path *path, Plan *plan,
+List *build_path_tlist(PlannerInfo *root, Path *path);
+bool use_physical_tlist(PlannerInfo *root, Path *path, int flags);
+List *get_gating_quals(PlannerInfo *root, List *quals);
+Plan *create_gating_plan(PlannerInfo *root, Path *path, Plan *plan,
 								List *gating_quals);
-static Plan *create_join_plan(PlannerInfo *root, JoinPath *best_path);
-static bool mark_async_capable_plan(Plan *plan, Path *path);
-static Plan *create_append_plan(PlannerInfo *root, AppendPath *best_path,
+Plan *create_join_plan(PlannerInfo *root, JoinPath *best_path);
+bool mark_async_capable_plan(Plan *plan, Path *path);
+Plan *create_append_plan(PlannerInfo *root, AppendPath *best_path,
 								int flags);
-static Plan *create_merge_append_plan(PlannerInfo *root, MergeAppendPath *best_path,
+Plan *create_merge_append_plan(PlannerInfo *root, MergeAppendPath *best_path,
 									  int flags);
-static Result *create_group_result_plan(PlannerInfo *root,
+Result *create_group_result_plan(PlannerInfo *root,
 										GroupResultPath *best_path);
-static ProjectSet *create_project_set_plan(PlannerInfo *root, ProjectSetPath *best_path);
-static Material *create_material_plan(PlannerInfo *root, MaterialPath *best_path,
+ProjectSet *create_project_set_plan(PlannerInfo *root, ProjectSetPath *best_path);
+Material *create_material_plan(PlannerInfo *root, MaterialPath *best_path,
 									  int flags);
-static Memoize *create_memoize_plan(PlannerInfo *root, MemoizePath *best_path,
+Memoize *create_memoize_plan(PlannerInfo *root, MemoizePath *best_path,
 									int flags);
-static Plan *create_unique_plan(PlannerInfo *root, UniquePath *best_path,
+Plan *create_unique_plan(PlannerInfo *root, UniquePath *best_path,
 								int flags);
-static Gather *create_gather_plan(PlannerInfo *root, GatherPath *best_path);
-static Plan *create_projection_plan(PlannerInfo *root,
+Gather *create_gather_plan(PlannerInfo *root, GatherPath *best_path);
+Plan *create_projection_plan(PlannerInfo *root,
 									ProjectionPath *best_path,
 									int flags);
-static Plan *inject_projection_plan(Plan *subplan, List *tlist, bool parallel_safe);
-static Sort *create_sort_plan(PlannerInfo *root, SortPath *best_path, int flags);
-static IncrementalSort *create_incrementalsort_plan(PlannerInfo *root,
+Plan *inject_projection_plan(Plan *subplan, List *tlist, bool parallel_safe);
+Sort *create_sort_plan(PlannerInfo *root, SortPath *best_path, int flags);
+IncrementalSort *create_incrementalsort_plan(PlannerInfo *root,
 													IncrementalSortPath *best_path, int flags);
-static Group *create_group_plan(PlannerInfo *root, GroupPath *best_path);
-static Unique *create_upper_unique_plan(PlannerInfo *root, UpperUniquePath *best_path,
+Group *create_group_plan(PlannerInfo *root, GroupPath *best_path);
+Unique *create_upper_unique_plan(PlannerInfo *root, UpperUniquePath *best_path,
 										int flags);
-static Agg *create_agg_plan(PlannerInfo *root, AggPath *best_path);
-static Plan *create_groupingsets_plan(PlannerInfo *root, GroupingSetsPath *best_path);
-static Result *create_minmaxagg_plan(PlannerInfo *root, MinMaxAggPath *best_path);
-static WindowAgg *create_windowagg_plan(PlannerInfo *root, WindowAggPath *best_path);
-static SetOp *create_setop_plan(PlannerInfo *root, SetOpPath *best_path,
+Agg *create_agg_plan(PlannerInfo *root, AggPath *best_path);
+Plan *create_groupingsets_plan(PlannerInfo *root, GroupingSetsPath *best_path);
+Result *create_minmaxagg_plan(PlannerInfo *root, MinMaxAggPath *best_path);
+WindowAgg *create_windowagg_plan(PlannerInfo *root, WindowAggPath *best_path);
+SetOp *create_setop_plan(PlannerInfo *root, SetOpPath *best_path,
 								int flags);
-static RecursiveUnion *create_recursiveunion_plan(PlannerInfo *root, RecursiveUnionPath *best_path);
-static LockRows *create_lockrows_plan(PlannerInfo *root, LockRowsPath *best_path,
+RecursiveUnion *create_recursiveunion_plan(PlannerInfo *root, RecursiveUnionPath *best_path);
+LockRows *create_lockrows_plan(PlannerInfo *root, LockRowsPath *best_path,
 									  int flags);
-static ModifyTable *create_modifytable_plan(PlannerInfo *root, ModifyTablePath *best_path);
-static Limit *create_limit_plan(PlannerInfo *root, LimitPath *best_path,
+ModifyTable *create_modifytable_plan(PlannerInfo *root, ModifyTablePath *best_path);
+Limit *create_limit_plan(PlannerInfo *root, LimitPath *best_path,
 								int flags);
-static SeqScan *create_seqscan_plan(PlannerInfo *root, Path *best_path,
+SeqScan *create_seqscan_plan(PlannerInfo *root, Path *best_path,
 									List *tlist, List *scan_clauses);
-static SampleScan *create_samplescan_plan(PlannerInfo *root, Path *best_path,
+SampleScan *create_samplescan_plan(PlannerInfo *root, Path *best_path,
 										  List *tlist, List *scan_clauses);
-static Scan *create_indexscan_plan(PlannerInfo *root, IndexPath *best_path,
+Scan *create_indexscan_plan(PlannerInfo *root, IndexPath *best_path,
 								   List *tlist, List *scan_clauses, bool indexonly);
-static BitmapHeapScan *create_bitmap_scan_plan(PlannerInfo *root,
+BitmapHeapScan *create_bitmap_scan_plan(PlannerInfo *root,
 											   BitmapHeapPath *best_path,
 											   List *tlist, List *scan_clauses);
-static Plan *create_bitmap_subplan(PlannerInfo *root, Path *bitmapqual,
+Plan *create_bitmap_subplan(PlannerInfo *root, Path *bitmapqual,
 								   List **qual, List **indexqual, List **indexECs);
-static void bitmap_subplan_mark_shared(Plan *plan);
-static TidScan *create_tidscan_plan(PlannerInfo *root, TidPath *best_path,
+void bitmap_subplan_mark_shared(Plan *plan);
+TidScan *create_tidscan_plan(PlannerInfo *root, TidPath *best_path,
 									List *tlist, List *scan_clauses);
-static TidRangeScan *create_tidrangescan_plan(PlannerInfo *root,
+TidRangeScan *create_tidrangescan_plan(PlannerInfo *root,
 											  TidRangePath *best_path,
 											  List *tlist,
 											  List *scan_clauses);
-static SubqueryScan *create_subqueryscan_plan(PlannerInfo *root,
+SubqueryScan *create_subqueryscan_plan(PlannerInfo *root,
 											  SubqueryScanPath *best_path,
 											  List *tlist, List *scan_clauses);
-static FunctionScan *create_functionscan_plan(PlannerInfo *root, Path *best_path,
+FunctionScan *create_functionscan_plan(PlannerInfo *root, Path *best_path,
 											  List *tlist, List *scan_clauses);
-static ValuesScan *create_valuesscan_plan(PlannerInfo *root, Path *best_path,
+ValuesScan *create_valuesscan_plan(PlannerInfo *root, Path *best_path,
 										  List *tlist, List *scan_clauses);
-static TableFuncScan *create_tablefuncscan_plan(PlannerInfo *root, Path *best_path,
+TableFuncScan *create_tablefuncscan_plan(PlannerInfo *root, Path *best_path,
 												List *tlist, List *scan_clauses);
-static CteScan *create_ctescan_plan(PlannerInfo *root, Path *best_path,
+CteScan *create_ctescan_plan(PlannerInfo *root, Path *best_path,
 									List *tlist, List *scan_clauses);
-static NamedTuplestoreScan *create_namedtuplestorescan_plan(PlannerInfo *root,
+NamedTuplestoreScan *create_namedtuplestorescan_plan(PlannerInfo *root,
 															Path *best_path, List *tlist, List *scan_clauses);
-static Result *create_resultscan_plan(PlannerInfo *root, Path *best_path,
+Result *create_resultscan_plan(PlannerInfo *root, Path *best_path,
 									  List *tlist, List *scan_clauses);
-static WorkTableScan *create_worktablescan_plan(PlannerInfo *root, Path *best_path,
+WorkTableScan *create_worktablescan_plan(PlannerInfo *root, Path *best_path,
 												List *tlist, List *scan_clauses);
-static ForeignScan *create_foreignscan_plan(PlannerInfo *root, ForeignPath *best_path,
+ForeignScan *create_foreignscan_plan(PlannerInfo *root, ForeignPath *best_path,
 											List *tlist, List *scan_clauses);
-static CustomScan *create_customscan_plan(PlannerInfo *root,
+CustomScan *create_customscan_plan(PlannerInfo *root,
 										  CustomPath *best_path,
 										  List *tlist, List *scan_clauses);
-static NestLoop *create_nestloop_plan(PlannerInfo *root, NestPath *best_path);
-static MergeJoin *create_mergejoin_plan(PlannerInfo *root, MergePath *best_path);
-static HashJoin *create_hashjoin_plan(PlannerInfo *root, HashPath *best_path);
-static Node *replace_nestloop_params(PlannerInfo *root, Node *expr);
-static Node *replace_nestloop_params_mutator(Node *node, PlannerInfo *root);
-static void fix_indexqual_references(PlannerInfo *root, IndexPath *index_path,
+NestLoop *create_nestloop_plan(PlannerInfo *root, NestPath *best_path);
+MergeJoin *create_mergejoin_plan(PlannerInfo *root, MergePath *best_path);
+HashJoin *create_hashjoin_plan(PlannerInfo *root, HashPath *best_path);
+Node *replace_nestloop_params(PlannerInfo *root, Node *expr);
+Node *replace_nestloop_params_mutator(Node *node, PlannerInfo *root);
+void fix_indexqual_references(PlannerInfo *root, IndexPath *index_path,
 									 List **stripped_indexquals_p,
 									 List **fixed_indexquals_p);
-static List *fix_indexorderby_references(PlannerInfo *root, IndexPath *index_path);
-static Node *fix_indexqual_clause(PlannerInfo *root,
+List *fix_indexorderby_references(PlannerInfo *root, IndexPath *index_path);
+Node *fix_indexqual_clause(PlannerInfo *root,
 								  IndexOptInfo *index, int indexcol,
 								  Node *clause, List *indexcolnos);
-static Node *fix_indexqual_operand(Node *node, IndexOptInfo *index, int indexcol);
-static List *get_switched_clauses(List *clauses, Relids outerrelids);
-static List *order_qual_clauses(PlannerInfo *root, List *clauses);
-static void copy_generic_path_info(Plan *dest, Path *src);
-static void copy_plan_costsize(Plan *dest, Plan *src);
-static void label_sort_with_costsize(PlannerInfo *root, Sort *plan,
+Node *fix_indexqual_operand(Node *node, IndexOptInfo *index, int indexcol);
+List *get_switched_clauses(List *clauses, Relids outerrelids);
+List *order_qual_clauses(PlannerInfo *root, List *clauses);
+void copy_generic_path_info(Plan *dest, Path *src);
+void copy_plan_costsize(Plan *dest, Plan *src);
+void label_sort_with_costsize(PlannerInfo *root, Sort *plan,
 									 double limit_tuples);
-static SeqScan *make_seqscan(List *qptlist, List *qpqual, Index scanrelid);
-static SampleScan *make_samplescan(List *qptlist, List *qpqual, Index scanrelid,
+SeqScan *make_seqscan(List *qptlist, List *qpqual, Index scanrelid);
+SampleScan *make_samplescan(List *qptlist, List *qpqual, Index scanrelid,
 								   TableSampleClause *tsc);
-static IndexScan *make_indexscan(List *qptlist, List *qpqual, Index scanrelid,
+IndexScan *make_indexscan(List *qptlist, List *qpqual, Index scanrelid,
 								 Oid indexid, List *indexqual, List *indexqualorig,
 								 List *indexorderby, List *indexorderbyorig,
 								 List *indexorderbyops,
 								 ScanDirection indexscandir);
-static IndexOnlyScan *make_indexonlyscan(List *qptlist, List *qpqual,
+IndexOnlyScan *make_indexonlyscan(List *qptlist, List *qpqual,
 										 Index scanrelid, Oid indexid,
 										 List *indexqual, List *recheckqual,
 										 List *indexorderby,
 										 List *indextlist,
 										 ScanDirection indexscandir);
-static BitmapIndexScan *make_bitmap_indexscan(Index scanrelid, Oid indexid,
+BitmapIndexScan *make_bitmap_indexscan(Index scanrelid, Oid indexid,
 											  List *indexqual,
 											  List *indexqualorig);
-static BitmapHeapScan *make_bitmap_heapscan(List *qptlist,
+BitmapHeapScan *make_bitmap_heapscan(List *qptlist,
 											List *qpqual,
 											Plan *lefttree,
 											List *bitmapqualorig,
 											Index scanrelid);
-static TidScan *make_tidscan(List *qptlist, List *qpqual, Index scanrelid,
+TidScan *make_tidscan(List *qptlist, List *qpqual, Index scanrelid,
 							 List *tidquals);
-static TidRangeScan *make_tidrangescan(List *qptlist, List *qpqual,
+TidRangeScan *make_tidrangescan(List *qptlist, List *qpqual,
 									   Index scanrelid, List *tidrangequals);
-static SubqueryScan *make_subqueryscan(List *qptlist,
+SubqueryScan *make_subqueryscan(List *qptlist,
 									   List *qpqual,
 									   Index scanrelid,
 									   Plan *subplan);
-static FunctionScan *make_functionscan(List *qptlist, List *qpqual,
+FunctionScan *make_functionscan(List *qptlist, List *qpqual,
 									   Index scanrelid, List *functions, bool funcordinality);
-static ValuesScan *make_valuesscan(List *qptlist, List *qpqual,
+ValuesScan *make_valuesscan(List *qptlist, List *qpqual,
 								   Index scanrelid, List *values_lists);
-static TableFuncScan *make_tablefuncscan(List *qptlist, List *qpqual,
+TableFuncScan *make_tablefuncscan(List *qptlist, List *qpqual,
 										 Index scanrelid, TableFunc *tablefunc);
-static CteScan *make_ctescan(List *qptlist, List *qpqual,
+CteScan *make_ctescan(List *qptlist, List *qpqual,
 							 Index scanrelid, int ctePlanId, int cteParam);
-static NamedTuplestoreScan *make_namedtuplestorescan(List *qptlist, List *qpqual,
+NamedTuplestoreScan *make_namedtuplestorescan(List *qptlist, List *qpqual,
 													 Index scanrelid, char *enrname);
-static WorkTableScan *make_worktablescan(List *qptlist, List *qpqual,
+WorkTableScan *make_worktablescan(List *qptlist, List *qpqual,
 										 Index scanrelid, int wtParam);
-static RecursiveUnion *make_recursive_union(List *tlist,
+RecursiveUnion *make_recursive_union(List *tlist,
 											Plan *lefttree,
 											Plan *righttree,
 											int wtParam,
 											List *distinctList,
 											long numGroups);
-static BitmapAnd *make_bitmap_and(List *bitmapplans);
-static BitmapOr *make_bitmap_or(List *bitmapplans);
-static NestLoop *make_nestloop(List *tlist,
+BitmapAnd *make_bitmap_and(List *bitmapplans);
+BitmapOr *make_bitmap_or(List *bitmapplans);
+NestLoop *make_nestloop(List *tlist,
 							   List *joinclauses, List *otherclauses, List *nestParams,
 							   Plan *lefttree, Plan *righttree,
 							   JoinType jointype, bool inner_unique);
-static HashJoin *make_hashjoin(List *tlist,
+HashJoin *make_hashjoin(List *tlist,
 							   List *joinclauses, List *otherclauses,
 							   List *hashclauses,
 							   List *hashoperators, List *hashcollations,
 							   List *hashkeys,
 							   Plan *lefttree, Plan *righttree,
 							   JoinType jointype, bool inner_unique);
-static Hash *make_hash(Plan *lefttree,
+Hash *make_hash(Plan *lefttree,
 					   List *hashkeys,
 					   Oid skewTable,
 					   AttrNumber skewColumn,
 					   bool skewInherit);
-static MergeJoin *make_mergejoin(List *tlist,
+MergeJoin *make_mergejoin(List *tlist,
 								 List *joinclauses, List *otherclauses,
 								 List *mergeclauses,
 								 Oid *mergefamilies,
@@ -254,14 +254,14 @@ static MergeJoin *make_mergejoin(List *tlist,
 								 Plan *lefttree, Plan *righttree,
 								 JoinType jointype, bool inner_unique,
 								 bool skip_mark_restore);
-static Sort *make_sort(Plan *lefttree, int numCols,
+Sort *make_sort(Plan *lefttree, int numCols,
 					   AttrNumber *sortColIdx, Oid *sortOperators,
 					   Oid *collations, bool *nullsFirst);
-static IncrementalSort *make_incrementalsort(Plan *lefttree,
+IncrementalSort *make_incrementalsort(Plan *lefttree,
 											 int numCols, int nPresortedCols,
 											 AttrNumber *sortColIdx, Oid *sortOperators,
 											 Oid *collations, bool *nullsFirst);
-static Plan *prepare_sort_from_pathkeys(Plan *lefttree, List *pathkeys,
+Plan *prepare_sort_from_pathkeys(Plan *lefttree, List *pathkeys,
 										Relids relids,
 										const AttrNumber *reqColIdx,
 										bool adjust_tlist_in_place,
@@ -270,19 +270,19 @@ static Plan *prepare_sort_from_pathkeys(Plan *lefttree, List *pathkeys,
 										Oid **p_sortOperators,
 										Oid **p_collations,
 										bool **p_nullsFirst);
-static Sort *make_sort_from_pathkeys(Plan *lefttree, List *pathkeys,
+Sort *make_sort_from_pathkeys(Plan *lefttree, List *pathkeys,
 									 Relids relids);
-static IncrementalSort *make_incrementalsort_from_pathkeys(Plan *lefttree,
+IncrementalSort *make_incrementalsort_from_pathkeys(Plan *lefttree,
 														   List *pathkeys, Relids relids, int nPresortedCols);
-static Sort *make_sort_from_groupcols(List *groupcls,
+Sort *make_sort_from_groupcols(List *groupcls,
 									  AttrNumber *grpColIdx,
 									  Plan *lefttree);
-static Material *make_material(Plan *lefttree);
-static Memoize *make_memoize(Plan *lefttree, Oid *hashoperators,
+Material *make_material(Plan *lefttree);
+Memoize *make_memoize(Plan *lefttree, Oid *hashoperators,
 							 Oid *collations, List *param_exprs,
 							 bool singlerow, bool binary_mode,
 							 uint32 est_entries, Bitmapset *keyparamids);
-static WindowAgg *make_windowagg(List *tlist, Index winref,
+WindowAgg *make_windowagg(List *tlist, Index winref,
 								 int partNumCols, AttrNumber *partColIdx, Oid *partOperators, Oid *partCollations,
 								 int ordNumCols, AttrNumber *ordColIdx, Oid *ordOperators, Oid *ordCollations,
 								 int frameOptions, Node *startOffset, Node *endOffset,
@@ -290,21 +290,21 @@ static WindowAgg *make_windowagg(List *tlist, Index winref,
 								 Oid inRangeColl, bool inRangeAsc, bool inRangeNullsFirst,
 								 List *runCondition, List *qual, bool topWindow,
 								 Plan *lefttree);
-static Group *make_group(List *tlist, List *qual, int numGroupCols,
+Group *make_group(List *tlist, List *qual, int numGroupCols,
 						 AttrNumber *grpColIdx, Oid *grpOperators, Oid *grpCollations,
 						 Plan *lefttree);
-static Unique *make_unique_from_sortclauses(Plan *lefttree, List *distinctList);
-static Unique *make_unique_from_pathkeys(Plan *lefttree,
+Unique *make_unique_from_sortclauses(Plan *lefttree, List *distinctList);
+Unique *make_unique_from_pathkeys(Plan *lefttree,
 										 List *pathkeys, int numCols);
-static Gather *make_gather(List *qptlist, List *qpqual,
+Gather *make_gather(List *qptlist, List *qpqual,
 						   int nworkers, int rescan_param, bool single_copy, Plan *subplan);
-static SetOp *make_setop(SetOpCmd cmd, SetOpStrategy strategy, Plan *lefttree,
+SetOp *make_setop(SetOpCmd cmd, SetOpStrategy strategy, Plan *lefttree,
 						 List *distinctList, AttrNumber flagColIdx, int firstFlag,
 						 long numGroups);
-static LockRows *make_lockrows(Plan *lefttree, List *rowMarks, int epqParam);
-static Result *make_result(List *tlist, Node *resconstantqual, Plan *subplan);
-static ProjectSet *make_project_set(List *tlist, Plan *subplan);
-static ModifyTable *make_modifytable(PlannerInfo *root, Plan *subplan,
+LockRows *make_lockrows(Plan *lefttree, List *rowMarks, int epqParam);
+Result *make_result(List *tlist, Node *resconstantqual, Plan *subplan);
+ProjectSet *make_project_set(List *tlist, Plan *subplan);
+ModifyTable *make_modifytable(PlannerInfo *root, Plan *subplan,
 									 CmdType operation, bool canSetTag,
 									 Index nominalRelation, Index rootRelation,
 									 bool partColsUpdated,
@@ -314,7 +314,7 @@ static ModifyTable *make_modifytable(PlannerInfo *root, Plan *subplan,
 									 List *rowMarks, OnConflictExpr *onconflict,
 									 List *mergeActionLists, List *mergeJoinConditions,
 									 int epqParam);
-static GatherMerge *create_gather_merge_plan(PlannerInfo *root,
+GatherMerge *create_gather_merge_plan(PlannerInfo *root,
 											 GatherMergePath *best_path);
 
 
@@ -384,7 +384,7 @@ create_plan(PlannerInfo *root, Path *best_path)
  * create_plan_recurse
  *	  Recursive guts of create_plan().
  */
-static Plan *
+Plan *
 create_plan_recurse(PlannerInfo *root, Path *best_path, int flags)
 {
 	Plan	   *plan;
@@ -555,7 +555,7 @@ create_plan_recurse(PlannerInfo *root, Path *best_path, int flags)
  * create_scan_plan
  *	 Create a scan plan for the parent relation of 'best_path'.
  */
-static Plan *
+Plan *
 create_scan_plan(PlannerInfo *root, Path *best_path, int flags)
 {
 	RelOptInfo *rel = best_path->parent;
@@ -821,7 +821,7 @@ create_scan_plan(PlannerInfo *root, Path *best_path, int flags)
  * This is almost just make_tlist_from_pathtarget(), but we also have to
  * deal with replacing nestloop params.
  */
-static List *
+List *
 build_path_tlist(PlannerInfo *root, Path *path)
 {
 	List	   *tlist = NIL;
@@ -861,7 +861,7 @@ build_path_tlist(PlannerInfo *root, Path *path)
  *		Decide whether to use a tlist matching relation structure,
  *		rather than only those Vars actually referenced.
  */
-static bool
+bool
 use_physical_tlist(PlannerInfo *root, Path *path, int flags)
 {
 	RelOptInfo *rel = path->parent;
@@ -998,7 +998,7 @@ use_physical_tlist(PlannerInfo *root, Path *path, int flags)
  * If the node's quals list includes any pseudoconstant quals,
  * return just those quals.
  */
-static List *
+List *
 get_gating_quals(PlannerInfo *root, List *quals)
 {
 	/* No need to look if we know there are no pseudoconstants */
@@ -1018,7 +1018,7 @@ get_gating_quals(PlannerInfo *root, List *quals)
  *
  * Add a gating Result node atop the already-built plan.
  */
-static Plan *
+Plan *
 create_gating_plan(PlannerInfo *root, Path *path, Plan *plan,
 				   List *gating_quals)
 {
@@ -1077,7 +1077,7 @@ create_gating_plan(PlannerInfo *root, Path *path, Plan *plan,
  *	  Create a join plan for 'best_path' and (recursively) plans for its
  *	  inner and outer paths.
  */
-static Plan *
+Plan *
 create_join_plan(PlannerInfo *root, JoinPath *best_path)
 {
 	Plan	   *plan;
@@ -1136,7 +1136,7 @@ create_join_plan(PlannerInfo *root, JoinPath *best_path)
  *		and if so, mark the Plan node as such and return true, otherwise
  *		return false.
  */
-static bool
+bool
 mark_async_capable_plan(Plan *plan, Path *path)
 {
 	switch (nodeTag(path))
@@ -1212,7 +1212,7 @@ mark_async_capable_plan(Plan *plan, Path *path)
  *
  *	  Returns a Plan node.
  */
-static Plan *
+Plan *
 create_append_plan(PlannerInfo *root, AppendPath *best_path, int flags)
 {
 	Append	   *plan;
@@ -1433,7 +1433,7 @@ create_append_plan(PlannerInfo *root, AppendPath *best_path, int flags)
  *
  *	  Returns a Plan node.
  */
-static Plan *
+Plan *
 create_merge_append_plan(PlannerInfo *root, MergeAppendPath *best_path,
 						 int flags)
 {
@@ -1583,7 +1583,7 @@ create_merge_append_plan(PlannerInfo *root, MergeAppendPath *best_path,
  *
  *	  Returns a Plan node.
  */
-static Result *
+Result *
 create_group_result_plan(PlannerInfo *root, GroupResultPath *best_path)
 {
 	Result	   *plan;
@@ -1608,7 +1608,7 @@ create_group_result_plan(PlannerInfo *root, GroupResultPath *best_path)
  *
  *	  Returns a Plan node.
  */
-static ProjectSet *
+ProjectSet *
 create_project_set_plan(PlannerInfo *root, ProjectSetPath *best_path)
 {
 	ProjectSet *plan;
@@ -1634,7 +1634,7 @@ create_project_set_plan(PlannerInfo *root, ProjectSetPath *best_path)
  *
  *	  Returns a Plan node.
  */
-static Material *
+Material *
 create_material_plan(PlannerInfo *root, MaterialPath *best_path, int flags)
 {
 	Material   *plan;
@@ -1662,7 +1662,7 @@ create_material_plan(PlannerInfo *root, MaterialPath *best_path, int flags)
  *
  *	  Returns a Plan node.
  */
-static Memoize *
+Memoize *
 create_memoize_plan(PlannerInfo *root, MemoizePath *best_path, int flags)
 {
 	Memoize    *plan;
@@ -1716,7 +1716,7 @@ create_memoize_plan(PlannerInfo *root, MemoizePath *best_path, int flags)
  *
  *	  Returns a Plan node.
  */
-static Plan *
+Plan *
 create_unique_plan(PlannerInfo *root, UniquePath *best_path, int flags)
 {
 	Plan	   *plan;
@@ -1915,7 +1915,7 @@ create_unique_plan(PlannerInfo *root, UniquePath *best_path, int flags)
  *	  Create a Gather plan for 'best_path' and (recursively) plans
  *	  for its subpaths.
  */
-static Gather *
+Gather *
 create_gather_plan(PlannerInfo *root, GatherPath *best_path)
 {
 	Gather	   *gather_plan;
@@ -1953,7 +1953,7 @@ create_gather_plan(PlannerInfo *root, GatherPath *best_path)
  *	  Create a Gather Merge plan for 'best_path' and (recursively)
  *	  plans for its subpaths.
  */
-static GatherMerge *
+GatherMerge *
 create_gather_merge_plan(PlannerInfo *root, GatherMergePath *best_path)
 {
 	GatherMerge *gm_plan;
@@ -2014,7 +2014,7 @@ create_gather_merge_plan(PlannerInfo *root, GatherMergePath *best_path)
  *	  for its subpaths.  We may need a Result node for the projection,
  *	  but sometimes we can just let the subplan do the work.
  */
-static Plan *
+Plan *
 create_projection_plan(PlannerInfo *root, ProjectionPath *best_path, int flags)
 {
 	Plan	   *plan;
@@ -2116,7 +2116,7 @@ create_projection_plan(PlannerInfo *root, ProjectionPath *best_path, int flags)
  * One reason it's ugly is we have to be told the right parallel_safe marking
  * to apply (since the tlist might be unsafe even if the child plan is safe).
  */
-static Plan *
+Plan *
 inject_projection_plan(Plan *subplan, List *tlist, bool parallel_safe)
 {
 	Plan	   *plan;
@@ -2176,7 +2176,7 @@ change_plan_targetlist(Plan *subplan, List *tlist, bool tlist_parallel_safe)
  *	  Create a Sort plan for 'best_path' and (recursively) plans
  *	  for its subpaths.
  */
-static Sort *
+Sort *
 create_sort_plan(PlannerInfo *root, SortPath *best_path, int flags)
 {
 	Sort	   *plan;
@@ -2210,7 +2210,7 @@ create_sort_plan(PlannerInfo *root, SortPath *best_path, int flags)
  *
  *	  Do the same as create_sort_plan, but create IncrementalSort plan.
  */
-static IncrementalSort *
+IncrementalSort *
 create_incrementalsort_plan(PlannerInfo *root, IncrementalSortPath *best_path,
 							int flags)
 {
@@ -2237,7 +2237,7 @@ create_incrementalsort_plan(PlannerInfo *root, IncrementalSortPath *best_path,
  *	  Create a Group plan for 'best_path' and (recursively) plans
  *	  for its subpaths.
  */
-static Group *
+Group *
 create_group_plan(PlannerInfo *root, GroupPath *best_path)
 {
 	Group	   *plan;
@@ -2276,7 +2276,7 @@ create_group_plan(PlannerInfo *root, GroupPath *best_path)
  *	  Create a Unique plan for 'best_path' and (recursively) plans
  *	  for its subpaths.
  */
-static Unique *
+Unique *
 create_upper_unique_plan(PlannerInfo *root, UpperUniquePath *best_path, int flags)
 {
 	Unique	   *plan;
@@ -2304,7 +2304,7 @@ create_upper_unique_plan(PlannerInfo *root, UpperUniquePath *best_path, int flag
  *	  Create an Agg plan for 'best_path' and (recursively) plans
  *	  for its subpaths.
  */
-static Agg *
+Agg *
 create_agg_plan(PlannerInfo *root, AggPath *best_path)
 {
 	Agg		   *plan;
@@ -2350,7 +2350,7 @@ create_agg_plan(PlannerInfo *root, AggPath *best_path)
  * the input tuple. So we get the ref from the entries in the groupclause and
  * look them up there.
  */
-static AttrNumber *
+AttrNumber *
 remap_groupColIdx(PlannerInfo *root, List *groupClause)
 {
 	AttrNumber *grouping_map = root->grouping_map;
@@ -2388,7 +2388,7 @@ remap_groupColIdx(PlannerInfo *root, List *groupClause)
  *
  *	  Returns a Plan node.
  */
-static Plan *
+Plan *
 create_groupingsets_plan(PlannerInfo *root, GroupingSetsPath *best_path)
 {
 	Agg		   *plan;
@@ -2546,7 +2546,7 @@ create_groupingsets_plan(PlannerInfo *root, GroupingSetsPath *best_path)
  *	  Create a Result plan for 'best_path' and (recursively) plans
  *	  for its subpaths.
  */
-static Result *
+Result *
 create_minmaxagg_plan(PlannerInfo *root, MinMaxAggPath *best_path)
 {
 	Result	   *plan;
@@ -2612,7 +2612,7 @@ create_minmaxagg_plan(PlannerInfo *root, MinMaxAggPath *best_path)
  *	  Create a WindowAgg plan for 'best_path' and (recursively) plans
  *	  for its subpaths.
  */
-static WindowAgg *
+WindowAgg *
 create_windowagg_plan(PlannerInfo *root, WindowAggPath *best_path)
 {
 	WindowAgg  *plan;
@@ -2715,7 +2715,7 @@ create_windowagg_plan(PlannerInfo *root, WindowAggPath *best_path)
  *	  Create a SetOp plan for 'best_path' and (recursively) plans
  *	  for its subpaths.
  */
-static SetOp *
+SetOp *
 create_setop_plan(PlannerInfo *root, SetOpPath *best_path, int flags)
 {
 	SetOp	   *plan;
@@ -2751,7 +2751,7 @@ create_setop_plan(PlannerInfo *root, SetOpPath *best_path, int flags)
  *	  Create a RecursiveUnion plan for 'best_path' and (recursively) plans
  *	  for its subpaths.
  */
-static RecursiveUnion *
+RecursiveUnion *
 create_recursiveunion_plan(PlannerInfo *root, RecursiveUnionPath *best_path)
 {
 	RecursiveUnion *plan;
@@ -2787,7 +2787,7 @@ create_recursiveunion_plan(PlannerInfo *root, RecursiveUnionPath *best_path)
  *	  Create a LockRows plan for 'best_path' and (recursively) plans
  *	  for its subpaths.
  */
-static LockRows *
+LockRows *
 create_lockrows_plan(PlannerInfo *root, LockRowsPath *best_path,
 					 int flags)
 {
@@ -2810,7 +2810,7 @@ create_lockrows_plan(PlannerInfo *root, LockRowsPath *best_path,
  *
  *	  Returns a Plan node.
  */
-static ModifyTable *
+ModifyTable *
 create_modifytable_plan(PlannerInfo *root, ModifyTablePath *best_path)
 {
 	ModifyTable *plan;
@@ -2851,7 +2851,7 @@ create_modifytable_plan(PlannerInfo *root, ModifyTablePath *best_path)
  *	  Create a Limit plan for 'best_path' and (recursively) plans
  *	  for its subpaths.
  */
-static Limit *
+Limit *
 create_limit_plan(PlannerInfo *root, LimitPath *best_path, int flags)
 {
 	Limit	   *plan;
@@ -2912,7 +2912,7 @@ create_limit_plan(PlannerInfo *root, LimitPath *best_path, int flags)
  *	 Returns a seqscan plan for the base relation scanned by 'best_path'
  *	 with restriction clauses 'scan_clauses' and targetlist 'tlist'.
  */
-static SeqScan *
+SeqScan *
 create_seqscan_plan(PlannerInfo *root, Path *best_path,
 					List *tlist, List *scan_clauses)
 {
@@ -2950,7 +2950,7 @@ create_seqscan_plan(PlannerInfo *root, Path *best_path,
  *	 Returns a samplescan plan for the base relation scanned by 'best_path'
  *	 with restriction clauses 'scan_clauses' and targetlist 'tlist'.
  */
-static SampleScan *
+SampleScan *
 create_samplescan_plan(PlannerInfo *root, Path *best_path,
 					   List *tlist, List *scan_clauses)
 {
@@ -3001,7 +3001,7 @@ create_samplescan_plan(PlannerInfo *root, Path *best_path,
  * us which to build --- we don't look at best_path->path.pathtype, because
  * create_bitmap_subplan needs to be able to override the prior decision.
  */
-static Scan *
+Scan *
 create_indexscan_plan(PlannerInfo *root,
 					  IndexPath *best_path,
 					  List *tlist,
@@ -3197,7 +3197,7 @@ create_indexscan_plan(PlannerInfo *root,
  *	  Returns a bitmap scan plan for the base relation scanned by 'best_path'
  *	  with restriction clauses 'scan_clauses' and targetlist 'tlist'.
  */
-static BitmapHeapScan *
+BitmapHeapScan *
 create_bitmap_scan_plan(PlannerInfo *root,
 						BitmapHeapPath *best_path,
 						List *tlist,
@@ -3327,7 +3327,7 @@ create_bitmap_scan_plan(PlannerInfo *root,
  * indexquals in RestrictInfo form, but that would be slower and still pretty
  * messy, since we'd have to build new RestrictInfos in many cases.)
  */
-static Plan *
+Plan *
 create_bitmap_subplan(PlannerInfo *root, Path *bitmapqual,
 					  List **qual, List **indexqual, List **indexECs)
 {
@@ -3535,7 +3535,7 @@ create_bitmap_subplan(PlannerInfo *root, Path *bitmapqual,
  *	 Returns a tidscan plan for the base relation scanned by 'best_path'
  *	 with restriction clauses 'scan_clauses' and targetlist 'tlist'.
  */
-static TidScan *
+TidScan *
 create_tidscan_plan(PlannerInfo *root, TidPath *best_path,
 					List *tlist, List *scan_clauses)
 {
@@ -3632,7 +3632,7 @@ create_tidscan_plan(PlannerInfo *root, TidPath *best_path,
  *	 Returns a tidrangescan plan for the base relation scanned by 'best_path'
  *	 with restriction clauses 'scan_clauses' and targetlist 'tlist'.
  */
-static TidRangeScan *
+TidRangeScan *
 create_tidrangescan_plan(PlannerInfo *root, TidRangePath *best_path,
 						 List *tlist, List *scan_clauses)
 {
@@ -3697,7 +3697,7 @@ create_tidrangescan_plan(PlannerInfo *root, TidRangePath *best_path,
  *	 Returns a subqueryscan plan for the base relation scanned by 'best_path'
  *	 with restriction clauses 'scan_clauses' and targetlist 'tlist'.
  */
-static SubqueryScan *
+SubqueryScan *
 create_subqueryscan_plan(PlannerInfo *root, SubqueryScanPath *best_path,
 						 List *tlist, List *scan_clauses)
 {
@@ -3756,7 +3756,7 @@ create_subqueryscan_plan(PlannerInfo *root, SubqueryScanPath *best_path,
  *	 Returns a functionscan plan for the base relation scanned by 'best_path'
  *	 with restriction clauses 'scan_clauses' and targetlist 'tlist'.
  */
-static FunctionScan *
+FunctionScan *
 create_functionscan_plan(PlannerInfo *root, Path *best_path,
 						 List *tlist, List *scan_clauses)
 {
@@ -3799,7 +3799,7 @@ create_functionscan_plan(PlannerInfo *root, Path *best_path,
  *	 Returns a tablefuncscan plan for the base relation scanned by 'best_path'
  *	 with restriction clauses 'scan_clauses' and targetlist 'tlist'.
  */
-static TableFuncScan *
+TableFuncScan *
 create_tablefuncscan_plan(PlannerInfo *root, Path *best_path,
 						  List *tlist, List *scan_clauses)
 {
@@ -3842,7 +3842,7 @@ create_tablefuncscan_plan(PlannerInfo *root, Path *best_path,
  *	 Returns a valuesscan plan for the base relation scanned by 'best_path'
  *	 with restriction clauses 'scan_clauses' and targetlist 'tlist'.
  */
-static ValuesScan *
+ValuesScan *
 create_valuesscan_plan(PlannerInfo *root, Path *best_path,
 					   List *tlist, List *scan_clauses)
 {
@@ -3886,7 +3886,7 @@ create_valuesscan_plan(PlannerInfo *root, Path *best_path,
  *	 Returns a ctescan plan for the base relation scanned by 'best_path'
  *	 with restriction clauses 'scan_clauses' and targetlist 'tlist'.
  */
-static CteScan *
+CteScan *
 create_ctescan_plan(PlannerInfo *root, Path *best_path,
 					List *tlist, List *scan_clauses)
 {
@@ -3981,7 +3981,7 @@ create_ctescan_plan(PlannerInfo *root, Path *best_path,
  *	'best_path' with restriction clauses 'scan_clauses' and targetlist
  *	'tlist'.
  */
-static NamedTuplestoreScan *
+NamedTuplestoreScan *
 create_namedtuplestorescan_plan(PlannerInfo *root, Path *best_path,
 								List *tlist, List *scan_clauses)
 {
@@ -4020,7 +4020,7 @@ create_namedtuplestorescan_plan(PlannerInfo *root, Path *best_path,
  *	'best_path' with restriction clauses 'scan_clauses' and targetlist
  *	'tlist'.
  */
-static Result *
+Result *
 create_resultscan_plan(PlannerInfo *root, Path *best_path,
 					   List *tlist, List *scan_clauses)
 {
@@ -4057,7 +4057,7 @@ create_resultscan_plan(PlannerInfo *root, Path *best_path,
  *	 Returns a worktablescan plan for the base relation scanned by 'best_path'
  *	 with restriction clauses 'scan_clauses' and targetlist 'tlist'.
  */
-static WorkTableScan *
+WorkTableScan *
 create_worktablescan_plan(PlannerInfo *root, Path *best_path,
 						  List *tlist, List *scan_clauses)
 {
@@ -4117,7 +4117,7 @@ create_worktablescan_plan(PlannerInfo *root, Path *best_path,
  *	 Returns a foreignscan plan for the relation scanned by 'best_path'
  *	 with restriction clauses 'scan_clauses' and targetlist 'tlist'.
  */
-static ForeignScan *
+ForeignScan *
 create_foreignscan_plan(PlannerInfo *root, ForeignPath *best_path,
 						List *tlist, List *scan_clauses)
 {
@@ -4272,7 +4272,7 @@ create_foreignscan_plan(PlannerInfo *root, ForeignPath *best_path,
  *
  * Transform a CustomPath into a Plan.
  */
-static CustomScan *
+CustomScan *
 create_customscan_plan(PlannerInfo *root, CustomPath *best_path,
 					   List *tlist, List *scan_clauses)
 {
@@ -4343,7 +4343,7 @@ create_customscan_plan(PlannerInfo *root, CustomPath *best_path,
  *
  *****************************************************************************/
 
-static NestLoop *
+NestLoop *
 create_nestloop_plan(PlannerInfo *root,
 					 NestPath *best_path)
 {
@@ -4435,7 +4435,7 @@ create_nestloop_plan(PlannerInfo *root,
 	return join_plan;
 }
 
-static MergeJoin *
+MergeJoin *
 create_mergejoin_plan(PlannerInfo *root,
 					  MergePath *best_path)
 {
@@ -4742,7 +4742,7 @@ create_mergejoin_plan(PlannerInfo *root,
 	return join_plan;
 }
 
-static HashJoin *
+HashJoin *
 create_hashjoin_plan(PlannerInfo *root,
 					 HashPath *best_path)
 {
@@ -4931,14 +4931,14 @@ create_hashjoin_plan(PlannerInfo *root,
  * root->curOuterRels are replaced by Params, and entries are added to
  * root->curOuterParams if not already present.
  */
-static Node *
+Node *
 replace_nestloop_params(PlannerInfo *root, Node *expr)
 {
 	/* No setup needed for tree walk, so away we go */
 	return replace_nestloop_params_mutator(expr, root);
 }
 
-static Node *
+Node *
 replace_nestloop_params_mutator(Node *node, PlannerInfo *root)
 {
 	if (node == NULL)
@@ -5018,7 +5018,7 @@ replace_nestloop_params_mutator(Node *node, PlannerInfo *root)
  * are subplans in it (we need two separate copies of the subplan tree, or
  * things will go awry).
  */
-static void
+void
 fix_indexqual_references(PlannerInfo *root, IndexPath *index_path,
 						 List **stripped_indexquals_p, List **fixed_indexquals_p)
 {
@@ -5059,7 +5059,7 @@ fix_indexqual_references(PlannerInfo *root, IndexPath *index_path,
  * This is a simplified version of fix_indexqual_references.  The input is
  * bare clauses and a separate indexcol list, instead of IndexClauses.
  */
-static List *
+List *
 fix_indexorderby_references(PlannerInfo *root, IndexPath *index_path)
 {
 	IndexOptInfo *index = index_path->indexinfo;
@@ -5088,7 +5088,7 @@ fix_indexorderby_references(PlannerInfo *root, IndexPath *index_path)
  * We replace nestloop params here, and replace the index key variables
  * or expressions by index Var nodes.
  */
-static Node *
+Node *
 fix_indexqual_clause(PlannerInfo *root, IndexOptInfo *index, int indexcol,
 					 Node *clause, List *indexcolnos)
 {
@@ -5159,7 +5159,7 @@ fix_indexqual_clause(PlannerInfo *root, IndexOptInfo *index, int indexcol,
  * Most of the code here is just for sanity cross-checking that the given
  * expression actually matches the index column it's claimed to.
  */
-static Node *
+Node *
 fix_indexqual_operand(Node *node, IndexOptInfo *index, int indexcol)
 {
 	Var		   *result;
@@ -5234,7 +5234,7 @@ fix_indexqual_operand(Node *node, IndexOptInfo *index, int indexcol)
  *	  touched; a modified list is returned.  We do, however, set the transient
  *	  outer_is_left field in each RestrictInfo to show which side was which.
  */
-static List *
+List *
 get_switched_clauses(List *clauses, Relids outerrelids)
 {
 	List	   *t_list = NIL;
@@ -5311,7 +5311,7 @@ get_switched_clauses(List *clauses, Relids outerrelids)
  * instead of bare clauses.  This is another reason why trying to consider
  * selectivity in the ordering would likely do the wrong thing.
  */
-static List *
+List *
 order_qual_clauses(PlannerInfo *root, List *clauses)
 {
 	typedef struct
@@ -5405,7 +5405,7 @@ order_qual_clauses(PlannerInfo *root, List *clauses)
  * The executor usually won't use this info, but it's needed by EXPLAIN.
  * Also copy the parallel-related flags, which the executor *will* use.
  */
-static void
+void
 copy_generic_path_info(Plan *dest, Path *src)
 {
 	dest->startup_cost = src->startup_cost;
@@ -5420,7 +5420,7 @@ copy_generic_path_info(Plan *dest, Path *src)
  * Copy cost and size info from a lower plan node to an inserted node.
  * (Most callers alter the info after copying it.)
  */
-static void
+void
 copy_plan_costsize(Plan *dest, Plan *src)
 {
 	dest->startup_cost = src->startup_cost;
@@ -5442,7 +5442,7 @@ copy_plan_costsize(Plan *dest, Plan *src)
  *
  * limit_tuples is as for cost_sort (in particular, pass -1 if no limit)
  */
-static void
+void
 label_sort_with_costsize(PlannerInfo *root, Sort *plan, double limit_tuples)
 {
 	Plan	   *lefttree = plan->plan.lefttree;
@@ -5474,7 +5474,7 @@ label_sort_with_costsize(PlannerInfo *root, Sort *plan, double limit_tuples)
  *	 Set isshared flag in bitmap subplan so that it will be created in
  *	 shared memory.
  */
-static void
+void
 bitmap_subplan_mark_shared(Plan *plan)
 {
 	if (IsA(plan, BitmapAnd))
@@ -5504,7 +5504,7 @@ bitmap_subplan_mark_shared(Plan *plan)
  *
  *****************************************************************************/
 
-static SeqScan *
+SeqScan *
 make_seqscan(List *qptlist,
 			 List *qpqual,
 			 Index scanrelid)
@@ -5521,7 +5521,7 @@ make_seqscan(List *qptlist,
 	return node;
 }
 
-static SampleScan *
+SampleScan *
 make_samplescan(List *qptlist,
 				List *qpqual,
 				Index scanrelid,
@@ -5540,7 +5540,7 @@ make_samplescan(List *qptlist,
 	return node;
 }
 
-static IndexScan *
+IndexScan *
 make_indexscan(List *qptlist,
 			   List *qpqual,
 			   Index scanrelid,
@@ -5571,7 +5571,7 @@ make_indexscan(List *qptlist,
 	return node;
 }
 
-static IndexOnlyScan *
+IndexOnlyScan *
 make_indexonlyscan(List *qptlist,
 				   List *qpqual,
 				   Index scanrelid,
@@ -5600,7 +5600,7 @@ make_indexonlyscan(List *qptlist,
 	return node;
 }
 
-static BitmapIndexScan *
+BitmapIndexScan *
 make_bitmap_indexscan(Index scanrelid,
 					  Oid indexid,
 					  List *indexqual,
@@ -5621,7 +5621,7 @@ make_bitmap_indexscan(Index scanrelid,
 	return node;
 }
 
-static BitmapHeapScan *
+BitmapHeapScan *
 make_bitmap_heapscan(List *qptlist,
 					 List *qpqual,
 					 Plan *lefttree,
@@ -5641,7 +5641,7 @@ make_bitmap_heapscan(List *qptlist,
 	return node;
 }
 
-static TidScan *
+TidScan *
 make_tidscan(List *qptlist,
 			 List *qpqual,
 			 Index scanrelid,
@@ -5660,7 +5660,7 @@ make_tidscan(List *qptlist,
 	return node;
 }
 
-static TidRangeScan *
+TidRangeScan *
 make_tidrangescan(List *qptlist,
 				  List *qpqual,
 				  Index scanrelid,
@@ -5679,7 +5679,7 @@ make_tidrangescan(List *qptlist,
 	return node;
 }
 
-static SubqueryScan *
+SubqueryScan *
 make_subqueryscan(List *qptlist,
 				  List *qpqual,
 				  Index scanrelid,
@@ -5699,7 +5699,7 @@ make_subqueryscan(List *qptlist,
 	return node;
 }
 
-static FunctionScan *
+FunctionScan *
 make_functionscan(List *qptlist,
 				  List *qpqual,
 				  Index scanrelid,
@@ -5720,7 +5720,7 @@ make_functionscan(List *qptlist,
 	return node;
 }
 
-static TableFuncScan *
+TableFuncScan *
 make_tablefuncscan(List *qptlist,
 				   List *qpqual,
 				   Index scanrelid,
@@ -5739,7 +5739,7 @@ make_tablefuncscan(List *qptlist,
 	return node;
 }
 
-static ValuesScan *
+ValuesScan *
 make_valuesscan(List *qptlist,
 				List *qpqual,
 				Index scanrelid,
@@ -5758,7 +5758,7 @@ make_valuesscan(List *qptlist,
 	return node;
 }
 
-static CteScan *
+CteScan *
 make_ctescan(List *qptlist,
 			 List *qpqual,
 			 Index scanrelid,
@@ -5779,7 +5779,7 @@ make_ctescan(List *qptlist,
 	return node;
 }
 
-static NamedTuplestoreScan *
+NamedTuplestoreScan *
 make_namedtuplestorescan(List *qptlist,
 						 List *qpqual,
 						 Index scanrelid,
@@ -5799,7 +5799,7 @@ make_namedtuplestorescan(List *qptlist,
 	return node;
 }
 
-static WorkTableScan *
+WorkTableScan *
 make_worktablescan(List *qptlist,
 				   List *qpqual,
 				   Index scanrelid,
@@ -5858,7 +5858,7 @@ make_foreignscan(List *qptlist,
 	return node;
 }
 
-static RecursiveUnion *
+RecursiveUnion *
 make_recursive_union(List *tlist,
 					 Plan *lefttree,
 					 Plan *righttree,
@@ -5914,7 +5914,7 @@ make_recursive_union(List *tlist,
 	return node;
 }
 
-static BitmapAnd *
+BitmapAnd *
 make_bitmap_and(List *bitmapplans)
 {
 	BitmapAnd  *node = makeNode(BitmapAnd);
@@ -5929,7 +5929,7 @@ make_bitmap_and(List *bitmapplans)
 	return node;
 }
 
-static BitmapOr *
+BitmapOr *
 make_bitmap_or(List *bitmapplans)
 {
 	BitmapOr   *node = makeNode(BitmapOr);
@@ -5944,7 +5944,7 @@ make_bitmap_or(List *bitmapplans)
 	return node;
 }
 
-static NestLoop *
+NestLoop *
 make_nestloop(List *tlist,
 			  List *joinclauses,
 			  List *otherclauses,
@@ -5969,7 +5969,7 @@ make_nestloop(List *tlist,
 	return node;
 }
 
-static HashJoin *
+HashJoin *
 make_hashjoin(List *tlist,
 			  List *joinclauses,
 			  List *otherclauses,
@@ -6000,7 +6000,7 @@ make_hashjoin(List *tlist,
 	return node;
 }
 
-static Hash *
+Hash *
 make_hash(Plan *lefttree,
 		  List *hashkeys,
 		  Oid skewTable,
@@ -6023,7 +6023,7 @@ make_hash(Plan *lefttree,
 	return node;
 }
 
-static MergeJoin *
+MergeJoin *
 make_mergejoin(List *tlist,
 			   List *joinclauses,
 			   List *otherclauses,
@@ -6064,7 +6064,7 @@ make_mergejoin(List *tlist,
  * Caller must have built the sortColIdx, sortOperators, collations, and
  * nullsFirst arrays already.
  */
-static Sort *
+Sort *
 make_sort(Plan *lefttree, int numCols,
 		  AttrNumber *sortColIdx, Oid *sortOperators,
 		  Oid *collations, bool *nullsFirst)
@@ -6094,7 +6094,7 @@ make_sort(Plan *lefttree, int numCols,
  * Caller must have built the sortColIdx, sortOperators, collations, and
  * nullsFirst arrays already.
  */
-static IncrementalSort *
+IncrementalSort *
 make_incrementalsort(Plan *lefttree, int numCols, int nPresortedCols,
 					 AttrNumber *sortColIdx, Oid *sortOperators,
 					 Oid *collations, bool *nullsFirst)
@@ -6160,7 +6160,7 @@ make_incrementalsort(Plan *lefttree, int numCols, int nPresortedCols,
  * Returns the node which is to be the input to the Sort (either lefttree,
  * or a Result stacked atop lefttree).
  */
-static Plan *
+Plan *
 prepare_sort_from_pathkeys(Plan *lefttree, List *pathkeys,
 						   Relids relids,
 						   const AttrNumber *reqColIdx,
@@ -6342,7 +6342,7 @@ prepare_sort_from_pathkeys(Plan *lefttree, List *pathkeys,
  *	  'pathkeys' is the list of pathkeys by which the result is to be sorted
  *	  'relids' is the set of relations required by prepare_sort_from_pathkeys()
  */
-static Sort *
+Sort *
 make_sort_from_pathkeys(Plan *lefttree, List *pathkeys, Relids relids)
 {
 	int			numsortkeys;
@@ -6377,7 +6377,7 @@ make_sort_from_pathkeys(Plan *lefttree, List *pathkeys, Relids relids)
  *	  'relids' is the set of relations required by prepare_sort_from_pathkeys()
  *	  'nPresortedCols' is the number of presorted columns in input tuples
  */
-static IncrementalSort *
+IncrementalSort *
 make_incrementalsort_from_pathkeys(Plan *lefttree, List *pathkeys,
 								   Relids relids, int nPresortedCols)
 {
@@ -6460,7 +6460,7 @@ make_sort_from_sortclauses(List *sortcls, Plan *lefttree)
  * appropriate to the grouping node.  So, only the sort ordering info
  * is used from the SortGroupClause entries.
  */
-static Sort *
+Sort *
 make_sort_from_groupcols(List *groupcls,
 						 AttrNumber *grpColIdx,
 						 Plan *lefttree)
@@ -6501,7 +6501,7 @@ make_sort_from_groupcols(List *groupcls,
 					 collations, nullsFirst);
 }
 
-static Material *
+Material *
 make_material(Plan *lefttree)
 {
 	Material   *node = makeNode(Material);
@@ -6564,7 +6564,7 @@ materialize_finished_plan(Plan *subplan)
 	return matplan;
 }
 
-static Memoize *
+Memoize *
 make_memoize(Plan *lefttree, Oid *hashoperators, Oid *collations,
 			 List *param_exprs, bool singlerow, bool binary_mode,
 			 uint32 est_entries, Bitmapset *keyparamids)
@@ -6623,7 +6623,7 @@ make_agg(List *tlist, List *qual,
 	return node;
 }
 
-static WindowAgg *
+WindowAgg *
 make_windowagg(List *tlist, Index winref,
 			   int partNumCols, AttrNumber *partColIdx, Oid *partOperators, Oid *partCollations,
 			   int ordNumCols, AttrNumber *ordColIdx, Oid *ordOperators, Oid *ordCollations,
@@ -6665,7 +6665,7 @@ make_windowagg(List *tlist, Index winref,
 	return node;
 }
 
-static Group *
+Group *
 make_group(List *tlist,
 		   List *qual,
 		   int numGroupCols,
@@ -6695,7 +6695,7 @@ make_group(List *tlist,
  * that should be considered by the Unique filter.  The input path must
  * already be sorted accordingly.
  */
-static Unique *
+Unique *
 make_unique_from_sortclauses(Plan *lefttree, List *distinctList)
 {
 	Unique	   *node = makeNode(Unique);
@@ -6744,7 +6744,7 @@ make_unique_from_sortclauses(Plan *lefttree, List *distinctList)
 /*
  * as above, but use pathkeys to identify the sort columns and semantics
  */
-static Unique *
+Unique *
 make_unique_from_pathkeys(Plan *lefttree, List *pathkeys, int numCols)
 {
 	Unique	   *node = makeNode(Unique);
@@ -6850,7 +6850,7 @@ make_unique_from_pathkeys(Plan *lefttree, List *pathkeys, int numCols)
 	return node;
 }
 
-static Gather *
+Gather *
 make_gather(List *qptlist,
 			List *qpqual,
 			int nworkers,
@@ -6879,7 +6879,7 @@ make_gather(List *qptlist,
  * items that should be considered by the SetOp filter.  The input path must
  * already be sorted accordingly.
  */
-static SetOp *
+SetOp *
 make_setop(SetOpCmd cmd, SetOpStrategy strategy, Plan *lefttree,
 		   List *distinctList, AttrNumber flagColIdx, int firstFlag,
 		   long numGroups)
@@ -6935,7 +6935,7 @@ make_setop(SetOpCmd cmd, SetOpStrategy strategy, Plan *lefttree,
  * make_lockrows
  *	  Build a LockRows plan node
  */
-static LockRows *
+LockRows *
 make_lockrows(Plan *lefttree, List *rowMarks, int epqParam)
 {
 	LockRows   *node = makeNode(LockRows);
@@ -6984,7 +6984,7 @@ make_limit(Plan *lefttree, Node *limitOffset, Node *limitCount,
  * make_result
  *	  Build a Result plan node
  */
-static Result *
+Result *
 make_result(List *tlist,
 			Node *resconstantqual,
 			Plan *subplan)
@@ -7005,7 +7005,7 @@ make_result(List *tlist,
  * make_project_set
  *	  Build a ProjectSet plan node
  */
-static ProjectSet *
+ProjectSet *
 make_project_set(List *tlist,
 				 Plan *subplan)
 {
@@ -7024,7 +7024,7 @@ make_project_set(List *tlist,
  * make_modifytable
  *	  Build a ModifyTable plan node
  */
-static ModifyTable *
+ModifyTable *
 make_modifytable(PlannerInfo *root, Plan *subplan,
 				 CmdType operation, bool canSetTag,
 				 Index nominalRelation, Index rootRelation,

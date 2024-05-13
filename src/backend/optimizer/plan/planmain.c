@@ -140,7 +140,6 @@ query_planner(PlannerInfo *root,
 												  (List *) parse->jointree->quals));
 
 				/* Select cheapest path (pretty easy in this case...) */
-				ereport(DEBUG1, errmsg("쿼리 계획111: \n", final_rel));
 				set_cheapest(final_rel);
 
 				/*

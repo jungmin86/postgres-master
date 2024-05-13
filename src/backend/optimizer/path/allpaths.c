@@ -161,6 +161,238 @@ static void recurse_push_qual(Node *setOp, Query *topquery,
 static void remove_unused_subquery_outputs(Query *subquery, RelOptInfo *rel,
 										   Bitmapset *extra_used_attrs);
 
+#include "postgres.h"
+#include "nodes/pg_list.h"
+#include "nodes/plannodes.h"
+#include "optimizer/planner.h"
+#include "optimizer/pathnode.h"
+#include "utils/elog.h"
+#include "commands/explain.h"
+#include "executor/executor.h"
+#include "nodes/makefuncs.h"
+#include "nodes/print.h"
+#include "lib/stringinfo.h"
+
+#define CP_EXACT_TLIST		0x0001	/* Plan must return specified tlist */
+#define CP_SMALL_TLIST		0x0002	/* Prefer narrower tlists */
+#define CP_LABEL_TLIST		0x0004	/* tlist must contain sortgrouprefs */
+#define CP_IGNORE_TLIST		0x0008	/* caller will replace tlist */
+
+// 필요한 함수들을 extern으로 선언
+extern Plan *create_plan_recurse(PlannerInfo *root, Path *best_path, int flags);
+extern Plan *create_scan_plan(PlannerInfo *root, Path *best_path, int flags);
+extern List *build_path_tlist(PlannerInfo *root, Path *path);
+extern bool use_physical_tlist(PlannerInfo *root, Path *path, int flags);
+extern List *get_gating_quals(PlannerInfo *root, List *quals);
+extern Plan *create_gating_plan(PlannerInfo *root, Path *path, Plan *plan, List *gating_quals);
+extern Plan *create_join_plan(PlannerInfo *root, JoinPath *best_path);
+extern Plan *create_append_plan(PlannerInfo *root, AppendPath *best_path, int flags);
+extern Plan *create_merge_append_plan(PlannerInfo *root, MergeAppendPath *best_path, int flags);
+extern Result *create_group_result_plan(PlannerInfo *root, GroupResultPath *best_path);
+extern ProjectSet *create_project_set_plan(PlannerInfo *root, ProjectSetPath *best_path);
+extern Material *create_material_plan(PlannerInfo *root, MaterialPath *best_path, int flags);
+extern Memoize *create_memoize_plan(PlannerInfo *root, MemoizePath *best_path, int flags);
+extern Plan *create_unique_plan(PlannerInfo *root, UniquePath *best_path, int flags);
+extern Gather *create_gather_plan(PlannerInfo *root, GatherPath *best_path);
+extern Plan *create_projection_plan(PlannerInfo *root, ProjectionPath *best_path, int flags);
+extern Sort *create_sort_plan(PlannerInfo *root, SortPath *best_path, int flags);
+extern IncrementalSort *create_incrementalsort_plan(PlannerInfo *root, IncrementalSortPath *best_path, int flags);
+extern Group *create_group_plan(PlannerInfo *root, GroupPath *best_path);
+extern Unique *create_upper_unique_plan(PlannerInfo *root, UpperUniquePath *best_path, int flags);
+extern Agg *create_agg_plan(PlannerInfo *root, AggPath *best_path);
+extern Plan *create_groupingsets_plan(PlannerInfo *root, GroupingSetsPath *best_path);
+extern Result *create_minmaxagg_plan(PlannerInfo *root, MinMaxAggPath *best_path);
+extern WindowAgg *create_windowagg_plan(PlannerInfo *root, WindowAggPath *best_path);
+extern SetOp *create_setop_plan(PlannerInfo *root, SetOpPath *best_path, int flags);
+extern RecursiveUnion *create_recursiveunion_plan(PlannerInfo *root, RecursiveUnionPath *best_path);
+extern LockRows *create_lockrows_plan(PlannerInfo *root, LockRowsPath *best_path, int flags);
+extern ModifyTable *create_modifytable_plan(PlannerInfo *root, ModifyTablePath *best_path);
+extern Limit *create_limit_plan(PlannerInfo *root, LimitPath *best_path, int flags);
+extern SeqScan *create_seqscan_plan(PlannerInfo *root, Path *best_path, List *tlist, List *scan_clauses);
+extern SampleScan *create_samplescan_plan(PlannerInfo *root, Path *best_path, List *tlist, List *scan_clauses);
+extern Scan *create_indexscan_plan(PlannerInfo *root, IndexPath *best_path, List *tlist, List *scan_clauses, bool indexonly);
+extern BitmapHeapScan *create_bitmap_scan_plan(PlannerInfo *root, BitmapHeapPath *best_path, List *tlist, List *scan_clauses);
+extern TidScan *create_tidscan_plan(PlannerInfo *root, TidPath *best_path, List *tlist, List *scan_clauses);
+extern TidRangeScan *create_tidrangescan_plan(PlannerInfo *root, TidRangePath *best_path, List *tlist, List *scan_clauses);
+extern SubqueryScan *create_subqueryscan_plan(PlannerInfo *root, SubqueryScanPath *best_path, List *tlist, List *scan_clauses);
+extern FunctionScan *create_functionscan_plan(PlannerInfo *root, Path *best_path, List *tlist, List *scan_clauses);
+extern ValuesScan *create_valuesscan_plan(PlannerInfo *root, Path *best_path, List *tlist, List *scan_clauses);
+extern TableFuncScan *create_tablefuncscan_plan(PlannerInfo *root, Path *best_path, List *tlist, List *scan_clauses);
+extern CteScan *create_ctescan_plan(PlannerInfo *root, Path *best_path, List *tlist, List *scan_clauses);
+extern NamedTuplestoreScan *create_namedtuplestorescan_plan(PlannerInfo *root, Path *best_path, List *tlist, List *scan_clauses);
+extern Result *create_resultscan_plan(PlannerInfo *root, Path *best_path, List *tlist, List *scan_clauses);
+extern WorkTableScan *create_worktablescan_plan(PlannerInfo *root, Path *best_path, List *tlist, List *scan_clauses);
+extern ForeignScan *create_foreignscan_plan(PlannerInfo *root, ForeignPath *best_path, List *tlist, List *scan_clauses);
+extern CustomScan *create_customscan_plan(PlannerInfo *root, CustomPath *best_path, List *tlist, List *scan_clauses);
+
+static int log_node_counter = 1;
+
+static void explain_plan_node_to_string(StringInfo str, Plan *plan, ExplainState *es)
+{
+    ExplainState es_copy;
+    memcpy(&es_copy, es, sizeof(ExplainState));
+    es_copy.str = str;
+    ExplainPrintPlan(&es_copy, plan);
+}
+
+void log_pathlist(PlannerInfo *root, RelOptInfo *rel)
+{
+    ListCell *lc;
+    foreach (lc, rel->pathlist)
+    {
+        Path *path = (Path *)lfirst(lc);
+        if (!path)
+        {
+            elog(LOG, "Path is NULL.");
+            continue;
+        }
+
+        StringInfoData str;
+        initStringInfo(&str);
+
+        appendStringInfo(&str, "<채택되지 않은 실행계획 %d>\n", log_node_counter++);
+
+        Plan *plan = NULL;
+        List *scan_clauses = NULL;
+        List *tlist = NULL;
+        List *gating_clauses = NULL;
+        int flags = CP_LABEL_TLIST;
+
+        switch (nodeTag(path))
+        {
+            case T_SeqScan:
+                plan = (Plan *)create_seqscan_plan(root, path, tlist, scan_clauses);
+                break;
+            case T_SampleScan:
+                plan = (Plan *)create_samplescan_plan(root, path, tlist, scan_clauses);
+                break;
+            case T_IndexScan:
+                plan = (Plan *)create_indexscan_plan(root, (IndexPath *)path, tlist, scan_clauses, false);
+                break;
+            case T_IndexOnlyScan:
+                plan = (Plan *)create_indexscan_plan(root, (IndexPath *)path, tlist, scan_clauses, true);
+                break;
+            case T_BitmapHeapScan:
+                plan = (Plan *)create_bitmap_scan_plan(root, (BitmapHeapPath *)path, tlist, scan_clauses);
+                break;
+            case T_TidScan:
+                plan = (Plan *)create_tidscan_plan(root, (TidPath *)path, tlist, scan_clauses);
+                break;
+            case T_TidRangeScan:
+                plan = (Plan *)create_tidrangescan_plan(root, (TidRangePath *)path, tlist, scan_clauses);
+                break;
+            case T_SubqueryScan:
+                plan = (Plan *)create_subqueryscan_plan(root, (SubqueryScanPath *)path, tlist, scan_clauses);
+                break;
+            case T_FunctionScan:
+                plan = (Plan *)create_functionscan_plan(root, path, tlist, scan_clauses);
+                break;
+            case T_ValuesScan:
+                plan = (Plan *)create_valuesscan_plan(root, path, tlist, scan_clauses);
+                break;
+            case T_TableFuncScan:
+                plan = (Plan *)create_tablefuncscan_plan(root, path, tlist, scan_clauses);
+                break;
+            case T_CteScan:
+                plan = (Plan *)create_ctescan_plan(root, path, tlist, scan_clauses);
+                break;
+            case T_NamedTuplestoreScan:
+                plan = (Plan *)create_namedtuplestorescan_plan(root, path, tlist, scan_clauses);
+                break;
+            case T_WorkTableScan:
+                plan = (Plan *)create_worktablescan_plan(root, path, tlist, scan_clauses);
+                break;
+            case T_ForeignScan:
+                plan = (Plan *)create_foreignscan_plan(root, (ForeignPath *)path, tlist, scan_clauses);
+                break;
+            case T_CustomScan:
+                plan = (Plan *)create_customscan_plan(root, (CustomPath *)path, tlist, scan_clauses);
+                break;
+            case T_Append:
+                plan = (Plan *)create_append_plan(root, (AppendPath *)path, flags);
+                break;
+            case T_MergeAppend:
+                plan = (Plan *)create_merge_append_plan(root, (MergeAppendPath *)path, flags);
+                break;
+            case T_Result:
+                plan = (Plan *)create_resultscan_plan(root, path, tlist, scan_clauses);
+                break;
+            case T_Material:
+                plan = (Plan *)create_material_plan(root, (MaterialPath *)path, flags);
+                break;
+            case T_Unique:
+                plan = (Plan *)create_upper_unique_plan(root, (UpperUniquePath *)path, flags);
+                break;
+            case T_Memoize:
+                plan = (Plan *)create_memoize_plan(root, (MemoizePath *)path, flags);
+                break;
+            case T_ProjectSet:
+                plan = (Plan *)create_project_set_plan(root, (ProjectSetPath *)path);
+                break;
+            case T_Sort:
+                plan = (Plan *)create_sort_plan(root, (SortPath *)path, flags);
+                break;
+            case T_IncrementalSort:
+                plan = (Plan *)create_incrementalsort_plan(root, (IncrementalSortPath *)path, flags);
+                break;
+            case T_Group:
+                plan = (Plan *)create_group_plan(root, (GroupPath *)path);
+                break;
+            case T_Agg:
+                plan = (Plan *)create_agg_plan(root, (AggPath *)path);
+                break;
+            case T_WindowAgg:
+                plan = (Plan *)create_windowagg_plan(root, (WindowAggPath *)path);
+                break;
+            case T_SetOp:
+                plan = (Plan *)create_setop_plan(root, (SetOpPath *)path, flags);
+                break;
+            case T_RecursiveUnion:
+                plan = (Plan *)create_recursiveunion_plan(root, (RecursiveUnionPath *)path);
+                break;
+            case T_LockRows:
+                plan = (Plan *)create_lockrows_plan(root, (LockRowsPath *)path, flags);
+                break;
+            case T_ModifyTable:
+                plan = (Plan *)create_modifytable_plan(root, (ModifyTablePath *)path);
+                break;
+            case T_Limit:
+                plan = (Plan *)create_limit_plan(root, (LimitPath *)path, flags);
+                break;
+            case T_Gather:
+                plan = (Plan *)create_gather_plan(root, (GatherPath *)path);
+                break;
+            default:
+                plan = create_plan_recurse(root, path, flags);
+                break;
+        }
+
+        if (plan)
+        {
+            ExplainState *es = NewExplainState();
+            es->verbose = true;
+            es->analyze = false;
+            es->costs = true;
+            es->buffers = false;
+            es->timing = false;
+            es->summary = false;
+            es->format = EXPLAIN_FORMAT_TEXT;
+
+            explain_plan_node_to_string(&str, plan, es);
+
+            elog(LOG, "%s", str.data);
+
+            pfree(str.data);
+            pfree(es);
+        }
+        else
+        {
+            elog(LOG, "Failed to create plan for path type: %d", (int)nodeTag(path));
+        }
+    }
+}
+
+
 
 /*
  * make_one_rel
@@ -555,6 +787,8 @@ set_rel_pathlist(PlannerInfo *root, RelOptInfo *rel,
 	if (rel->reloptkind == RELOPT_BASEREL &&
 		!bms_equal(rel->relids, root->all_query_rels))
 		generate_useful_gather_paths(root, rel, false);
+
+	log_pathlist(root, rel);
 
 	/* Now find the cheapest of the paths for this rel */
 	set_cheapest(rel);
