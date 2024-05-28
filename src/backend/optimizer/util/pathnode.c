@@ -259,6 +259,14 @@ set_cheapest(RelOptInfo *parent_rel)
 	{
 		Path	   *path = (Path *) lfirst(p);
 		int			cmp;
+		StringInfoData path_info;
+
+        initStringInfo(&path_info);
+
+
+        elog(LOG, "고려되는 path type: %d, total_cost: %f, startup_cost: %f",
+             nodeTag(path), path->total_cost, path->startup_cost);
+
 
 		if (path->param_info)
 		{
@@ -356,6 +364,11 @@ set_cheapest(RelOptInfo *parent_rel)
 	parent_rel->cheapest_total_path = cheapest_total_path;
 	parent_rel->cheapest_unique_path = NULL;	/* computed only if needed */
 	parent_rel->cheapest_parameterized_paths = parameterized_paths;
+
+	elog(LOG, "선택된 startup path type: %d, total_cost: %f, startup_cost: %f",
+         (int) nodeTag(cheapest_startup_path), cheapest_startup_path ? cheapest_startup_path->total_cost : -1, cheapest_startup_path ? cheapest_startup_path->startup_cost : -1);
+    elog(LOG, "선택된 total path type: %d, total_cost: %f, startup_cost: %f",
+         (int) nodeTag(cheapest_total_path), cheapest_total_path->total_cost, cheapest_total_path->startup_cost);
 }
 
 /*
