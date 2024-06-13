@@ -2827,6 +2827,7 @@ cost_agg(Path *path, PlannerInfo *root,
 		spill_cost = depth * input_tuples * 2.0 * cpu_tuple_cost;
 		startup_cost += spill_cost;
 		total_cost += spill_cost;
+		elog(LOG, "spill_cost: %f, pages_read: %f, pages_written: %f", spill_cost, pages_read, pages_written);
 	}
 
 	/*
@@ -2852,6 +2853,7 @@ cost_agg(Path *path, PlannerInfo *root,
 	path->rows = output_tuples;
 	path->startup_cost = startup_cost;
 	path->total_cost = total_cost;
+	elog(LOG, "start_cost: %f, total_cost: %f", startup_cost, total_cost);
 }
 
 /*
